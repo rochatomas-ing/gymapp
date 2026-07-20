@@ -44,7 +44,7 @@ public class UsuarioController {
         }
 
         // Si falló el login, mandamos un mensaje de error de vuelta al HTML de login
-        model.addAttribute("error", "DNI/Email o contraseña incorrectos. Intente nuevamente.");
+        model.addAttribute("Error", "DNI/Email o contraseña incorrectos. Intente nuevamente.");
         return "login"; 
     }
 }
