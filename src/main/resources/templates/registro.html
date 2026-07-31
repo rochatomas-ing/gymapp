@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - GymApp</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="auth-page register-page">
+
+    <!-- 1. BARRA DE NAVEGACIÓN UNIFICADA -->
+    <header class="top-nav">
+        <div class="nav-brand">
+            <!-- Logo del gimnasio que vuelve al inicio o login -->
+            <a th:href="@{/login}" class="logo-link" title="Ir al inicio de sesión">
+                <img src="@{/images/logo.jpg}" alt="Genesis Gym" class="gym-logo" />
+            </a>
+        </div>
+        <nav class="nav-actions">
+            <a th:href="@{/login}" class="btn-secondary-link">Iniciar Sesión</a>
+        </nav>
+    </header>
+
+    <!-- 2. CONTENIDO PRINCIPAL (CONTENEDOR DE FORMULARIO) -->
+    <main class="auth-main">
+        <section class="auth-card">
+
+            <!-- Encabezado de la Tarjeta -->
+            <header class="auth-card-header text-center">
+                <h2>Únete a GymApp 💪</h2>
+                <p>Crea tu cuenta de profesor o alumno para comenzar.</p>
+            </header>
+
+            <!-- Alerta de Error (si viene desde el controlador) -->
+            <div th:if="${Error}" class="alert-danger" role="alert">
+                <span class="alert-icon">⚠️</span>
+                <span th:text="${Error}">Ocurrió un error al intentar registrarse.</span>
+            </div>
+
+            <!-- Formulario de Registro -->
+            <form class="auth-form" th:action="@{/registro}" method="post">
+                
+                <!-- DNI -->
+                <div class="form-group">
+                    <label for="dni">DNI <small>(Será tu usuario de acceso)</small></label>
+                    <input type="text" 
+                           id="dni" 
+                           name="dni" 
+                           inputmode="numeric" 
+                           pattern="[0-9]*"
+                           required 
+                           placeholder="Ej: 40123456" 
+                           autocomplete="username">
+                </div>
+
+                <!-- Nombre Completo -->
+                <div class="form-group">
+                    <label for="nombre">Nombre Completo</label>
+                    <input type="text" 
+                           id="nombre" 
+                           name="nombre" 
+                           required 
+                           placeholder="Ej: Juan Pérez" 
+                           autocomplete="name">
+                </div>
+
+                <!-- Correo Electrónico -->
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input type="email" 
+                           id="email" 
+                           name="email" 
+                           required 
+                           placeholder="ejemplo@gym.com" 
+                           autocomplete="email">
+                </div>
+
+                <!-- Contraseña -->
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" 
+                           id="password" 
+                           name="password" 
+                           required 
+                           placeholder="Crea una contraseña segura" 
+                           autocomplete="new-password">
+                </div>
+
+                <!-- Selector de Rol -->
+                <div class="form-group">
+                    <label for="rol">¿Quién eres?</label>
+                    <select id="rol" name="rol" required onchange="toggleProfesorSelect()">
+                        <option value="" disabled selected>Selecciona tu rol</option>
+                        <option value="ALUMNO">Soy Alumno</option>
+                        <option value="PROFESOR">Soy Profesor</option>
+                    </select>
+                </div>
+
+                <!-- Selector Dinámico de Profesor (Condicional) -->
+                <div class="form-group" id="contenedor-profesor" style="display: none;">
+                    <label for="profesorDni">Asigna tu Profesor</label>
+                    <select id="profesorDni" name="profesorDni">
+                        <option value="">-- Selecciona un Profesor --</option>
+                        <option th:each="p : ${profesores}" th:value="${p.dni}" th:text="${p.nombre}"></option>
+                    </select>
+                </div>
+
+                <!-- Botón de Envío -->
+                <button type="submit" class="btn btn-primary btn-block">Registrarse</button>
+            </form>
+
+            <!-- Enlace alternativo / Pie de tarjeta -->
+            <footer class="auth-card-footer text-center">
+                <p>¿Ya tienes una cuenta? <a th:href="@{/login}" class="link-highlight">Inicia sesión aquí</a></p>
+            </footer>
+
+        </section>
+    </main>
+
+    <!-- 3. PIE DE PÁGINA -->
+    <footer class="main-footer text-center">
+        <p>&copy; 2026 GymApp. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Lógica de Toggle en cliente -->
+    <script>
+        function toggleProfesorSelect() {
+            const rolSelect = document.getElementById('rol');
+            const contenedorProfesor = document.getElementById('contenedor-profesor');
+            const profesorDni = document.getElementById('profesorDni');
+            
+            if (rolSelect.value === 'ALUMNO') {
+                contenedorProfesor.style.display = 'block';
+                profesorDni.required = true;
+            } else {
+                contenedorProfesor.style.display = 'none';
+                profesorDni.required = false;
+                profesorDni.value = "";
+            }
+        }
+    </script>
+</body>
+</html>

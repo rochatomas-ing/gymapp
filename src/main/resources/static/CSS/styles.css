@@ -1,0 +1,537 @@
+/* ==========================================================================
+   GENESIS GYM - ULTRA MODERN DARK THEME
+   ========================================================================== */
+
+/* 1. VARIABLES DE DISEÑO RENOVADAS */
+:root {
+    /* Paleta Principal Genesis */
+    --color-teal: #00A896;
+    --color-teal-glow: rgba(0, 168, 150, 0.25);
+    --color-coral: #E53955;
+    --color-coral-glow: rgba(229, 57, 85, 0.25);
+
+    /* Tonos Oscuros y Grises */
+    --color-bg-main: #0B0E11;        /* Fondo general profundo */
+    --color-card-bg: #151A21;        /* Fondo de tarjetas */
+    --color-card-hover: #1C232C;     /* Hover de tarjetas */
+    --color-input-bg: #0F1318;       /* Fondo de inputs */
+    --color-card-border: #252D37;    /* Borde sutil */
+
+    /* Tipografía */
+    --color-text-heading: #E2E8F0;
+    --color-text-body: #CBD5E1;
+    --color-text-muted: #8292A6;
+
+    /* Bordes Redondeados Moderados */
+    --radius-sm: 8px;   /* Esquinas suaves para inputs elegantes */
+    --radius-md: 14px;  /* Para tarjetas y contenedores */
+    --radius-lg: 20px;
+    --radius-pill: 9999px;
+
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* 2. BASE GENERAL (FIX DE DESPLAZAMIENTO MÓVIL) */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: clip; /* Corta el exceso sin congelar la vista inicial */
+}
+
+body {
+    background-color: var(--color-bg-main);
+    color: var(--color-text-body);
+    font-family: var(--font-main);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 3. NAVEGACIÓN PRINCIPAL (CENTRADA Y DESPEJADA DE BORDES) */
+.top-nav {
+    background-color: rgba(21, 26, 33, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-card-border);
+    padding: 14px 28px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+}
+
+/* Contenedor interno para despejar los bordes laterales */
+.top-nav-container {
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.gym-logo {
+    height: 48px;
+    max-width: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+    transition: var(--transition);
+}
+
+.gym-logo:hover {
+    transform: scale(1.05) rotate(-1deg);
+}
+
+.user-greeting {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.user-greeting strong {
+    color: var(--color-text-heading);
+}
+
+.btn-logout {
+    color: var(--color-coral);
+    border: 1px solid rgba(229, 57, 85, 0.4);
+    background: rgba(229, 57, 85, 0.05);
+    padding: 8px 18px;
+    border-radius: var(--radius-pill);
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-logout:hover {
+    background-color: var(--color-coral);
+    color: var(--color-text-heading);
+    box-shadow: 0 0 15px var(--color-coral-glow);
+}
+
+/* 4. CONTENEDORES Y BANNERS */
+.dashboard-main {
+    flex: 1;
+    max-width: 1000px;
+    width: 90%;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.welcome-banner {
+    background: linear-gradient(135deg, rgba(0, 168, 150, 0.12) 0%, rgba(229, 57, 85, 0.08) 100%);
+    border: 1px solid var(--color-card-border);
+    border-left: 4px solid var(--color-teal);
+    border-radius: var(--radius-md);
+    padding: 28px 32px;
+    margin-bottom: 32px;
+}
+
+.welcome-banner h2 {
+    font-size: 1.75rem;
+    color: var(--color-text-heading);
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.welcome-banner p {
+    color: var(--color-text-muted);
+}
+
+/* 5. TARJETAS Y GRID RESPONSIVO */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 24px;
+    width: 100%;
+}
+
+.dashboard-card, .search-card, .table-card, .routine-card, .auth-card {
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-md);
+    padding: 28px;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    transition: var(--transition);
+}
+
+.dashboard-card:hover {
+    background-color: var(--color-card-hover);
+    border-color: rgba(0, 168, 150, 0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px -10px rgba(0, 168, 150, 0.15);
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+    display: inline-block;
+}
+
+.dashboard-card h3 {
+    color: var(--color-text-heading);
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+}
+
+.dashboard-card p {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+}
+
+/* 6. BOTONES */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition);
+    gap: 8px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #00A896, #008f80);
+    color: #E2E8F0;
+    box-shadow: 0 4px 15px var(--color-teal-glow);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 168, 150, 0.4);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    border: 1px solid var(--color-teal);
+    color: var(--color-teal);
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-teal);
+    color: var(--color-text-heading);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #E53955, #c82b45);
+    color: #E2E8F0;
+    box-shadow: 0 4px 15px var(--color-coral-glow);
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(229, 57, 85, 0.4);
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/* 7. FORMULARIOS E INPUTS Generales */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+select,
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: var(--color-input-bg);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-sm); /* Recuadros con borde suave de 8px */
+    color: var(--color-text-heading);
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--color-teal);
+    box-shadow: 0 0 0 3px var(--color-teal-glow);
+}
+
+/* 8. TABLAS REDONDEADAS Y LIMPIAS */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: var(--radius-sm);
+    padding-bottom: 6px;
+    margin-bottom: 12px;
+}
+
+.data-table, .routine-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    text-align: left;
+}
+
+.data-table th, .routine-table th {
+    background-color: rgba(0, 168, 150, 0.08);
+    color: var(--color-teal);
+    padding: 16px 20px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    border-bottom: 1px solid var(--color-card-border);
+    white-space: nowrap;
+}
+
+.data-table td, .routine-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--color-card-border);
+    font-size: 0.9rem;
+    color: var(--color-text-body);
+    vertical-align: middle;
+}
+
+.data-table tbody tr {
+    transition: var(--transition);
+}
+
+.data-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* 9. BADGES REDONDEADAS */
+.status-badge {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px 16px;
+    border-radius: var(--radius-pill);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.badge-success {
+    background-color: rgba(0, 168, 150, 0.12);
+    color: var(--color-teal);
+    border: 1px solid rgba(0, 168, 150, 0.3);
+}
+
+.badge-danger {
+    background-color: rgba(229, 57, 85, 0.12);
+    color: var(--color-coral);
+    border: 1px solid rgba(229, 57, 85, 0.3);
+}
+
+.status-detail {
+    font-weight: 400;
+    font-size: 0.72rem;
+    opacity: 0.85;
+}
+
+/* 10. ALERTAS CURVAS */
+.alert {
+    padding: 16px 20px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 24px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.alert-success {
+    background-color: rgba(0, 168, 150, 0.15);
+    border: 1px solid var(--color-teal);
+    color: var(--color-text-heading);
+}
+
+.alert-danger {
+    background-color: rgba(229, 57, 85, 0.15);
+    border: 1px solid var(--color-coral);
+    color: var(--color-text-heading);
+}
+
+/* 11. AUTENTICACIÓN (LOGIN Y REGISTRO) */
+body.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    padding: 16px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+/* 12. FOOTER */
+.main-footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--color-card-border);
+    margin-top: auto;
+}
+
+/* ==========================================================================
+   13. CREADOR DE RUTINAS (Diseño Estilizado & Espacioso)
+   ========================================================================== */
+
+/* Contenedor principal centrado que evita tocar los bordes */
+.routine-builder-main {
+    flex: 1;
+    max-width: 1000px;
+    width: 90%;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+/* Tarjeta del Día */
+.routine-day-card {
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-md);
+    padding: 32px;
+    margin-bottom: 28px;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.routine-day-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.routine-day-header label {
+    font-weight: 700;
+    color: var(--color-teal);
+    font-size: 1.05rem;
+    white-space: nowrap;
+}
+
+/* Inputs de la tabla con esquinas rectangulares suaves (8px) */
+.table-input {
+    width: 100%;
+    min-width: 120px;
+    padding: 10px 14px;
+    background-color: var(--color-input-bg);
+    border: 1px solid var(--color-card-border);
+    border-radius: 8px; /* Aspecto rectangular elegante, no abultado */
+    color: var(--color-text-heading);
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.table-input::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.5;
+}
+
+.table-input:focus {
+    outline: none;
+    border-color: var(--color-teal);
+    box-shadow: 0 0 0 3px var(--color-teal-glow);
+    background-color: #12171E;
+}
+
+.routine-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   14. RESPONSIVO PARA MÓVILES (CONSOLIDADO)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .top-nav {
+        padding: 12px 20px;
+    }
+
+    .gym-logo {
+        height: 38px;
+    }
+
+    .user-greeting {
+        display: none;
+    }
+
+    .dashboard-main,
+    .routine-builder-main {
+        width: 100%;
+        padding: 0 16px; /* Despeje de 16px de los bordes físicos del celular */
+        margin: 16px auto;
+    }
+
+    .welcome-banner, 
+    .dashboard-card, 
+    .search-card, 
+    .table-card, 
+    .routine-card {
+        padding: 20px 18px;
+    }
+
+    .welcome-banner h2 {
+        font-size: 1.4rem;
+    }
+
+    .routine-day-card {
+        padding: 20px 16px;
+    }
+
+    .routine-day-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .routine-day-header .table-input {
+        width: 100%;
+        max-width: 100% !important;
+    }
+
+    .routine-actions {
+        flex-direction: column;
+    }
+
+    .routine-actions .btn {
+        width: 100%;
+    }
+}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Profesor - GymApp</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="dashboard-profesor">
+
+    <!-- 1. BARRA DE NAVEGACIÓN SUPERIOR (Top Bar) -->
+    <header class="top-nav">
+        <div class="nav-brand">
+            <!-- Logo que redirige a este mismo panel principal -->
+            <a th:href="@{/profesor}">
+                <img th:src="@{/images/logo.jpg}" alt="Genesis Gym" class="gym-logo">
+            </a>
+        </div>
+
+        <nav class="nav-user">
+            <!-- Perfil del usuario y salir -->
+            <span class="user-greeting">
+                Hola, <strong th:text="${profesor?.nombre ?: session.usuarioLogueado?.nombre}">Profesor</strong>
+            </span>
+            <a th:href="@{/logout}" class="btn-logout">Cerrar Sesión</a>
+        </nav>
+    </header>
+
+    <!-- 2. CONTENIDO PRINCIPAL DEL DASHBOARD -->
+    <main class="dashboard-main">
+
+        <!-- Banner / Hero de Bienvenida -->
+        <section class="welcome-banner">
+            <div class="welcome-text">
+                <h2>Panel de Control</h2>
+                <p>Gestiona a tus alumnos, asigna rutinas y registra nuevos miembros desde un solo lugar.</p>
+            </div>
+        </section>
+
+        <!-- Grilla de Tarjetas de Acción (Acciones Rápidas) -->
+        <section class="dashboard-grid">
+            
+            <!-- Tarjeta 1: Gestión de Alumnos -->
+            <article class="dashboard-card">
+                <div class="card-icon">👥</div>
+                <div class="card-body">
+                    <h3>Mis Alumnos</h3>
+                    <p>Consulta la lista de alumnos asignados, revisa o modifica sus rutinas y haz seguimiento de su avance.</p>
+                </div>
+                <div class="card-footer">
+                    <a th:href="@{/profesor/alumnos}" class="btn-card">Ver Alumnos →</a>
+                </div>
+            </article>
+
+            <!-- Tarjeta 2: Registrar Nuevo Alumno -->
+            <article class="dashboard-card">
+                <div class="card-icon">👤➕</div>
+                <div class="card-body">
+                    <h3>Registrar Alumno</h3>
+                    <p>Da de alta a un nuevo alumno en la plataforma para poder comenzar a asignarle planes de entrenamiento.</p>
+                </div>
+                <div class="card-footer">
+                    <a th:href="@{/registro}" class="btn-card">Nuevo Registro →</a>
+                </div>
+            </article>
+
+            <!-- Tarjeta 3 (Opcional / Futura expansión): Resumen rápido / Estado -->
+            <article class="dashboard-card card-info">
+                <div class="card-icon">📋</div>
+                <div class="card-body">
+                    <h3>Acceso Rápido</h3>
+                    <p>Recuerda mantener actualizadas las rutinas de tus alumnos al inicio de cada mes o ciclo de entrenamiento.</p>
+                </div>
+            </article>
+
+        </section>
+
+    </main>
+
+    <!-- 3. PIE DE PÁGINA (Footer clásico) -->
+    <footer class="main-footer">
+        <p>&copy; 2026 GymApp. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>

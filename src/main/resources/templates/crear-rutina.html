@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Rutina - Genesis Gym</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+    <!-- Navegación Superior Alineada -->
+    <nav class="top-nav">
+        <div class="top-nav-container">
+            <a th:href="@{/profesor}">
+                <img th:src="@{/images/logo.jpg}" alt="Genesis Gym" class="gym-logo">
+            </a>
+            <a th:href="@{/logout}" class="btn-logout">Cerrar Sesión</a>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal Centrado -->
+    <main class="routine-builder-main">
+        
+        <div class="welcome-banner">
+            <h2>Crear Rutina para: <span th:text="${rutina.alumno != null ? rutina.alumno.nombre : 'Alumno'}"></span></h2>
+            <p>Diseñá los días y ejercicios asignados para el progreso del alumno.</p>
+        </div>
+
+        <form th:action="@{/profesor/rutinas/guardar}" th:object="${rutina}" method="post">
+            
+            <input type="hidden" th:field="*{alumno.dni}" />
+
+            <div id="contenedor-dias">
+                
+                <div class="routine-day-card" th:each="dia, diaStat : *{dias}" th:id="'dia-' + ${diaStat.index}">
+                    
+                    <div class="routine-day-header">
+                        <label>Día:</label>
+                        <input type="text" 
+                               th:name="|dias[${diaStat.index}].nombre|" 
+                               th:value="${dia.nombre}" 
+                               placeholder="Ej: Lunes - Pecho y Tríceps" 
+                               class="table-input" 
+                               style="max-width: 320px;" 
+                               required />
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 35%;">Ejercicio</th>
+                                    <th style="width: 20%;">Peso</th>
+                                    <th style="width: 20%;">Series / Reps</th>
+                                    <th style="width: 25%;">Aumento Semanal</th>
+                                </tr>
+                            </thead>
+                            <tbody th:id="'cuerpo-tabla-' + ${diaStat.index}">
+                                <tr th:each="item, itemStat : ${dia.items}">
+                                    <td><input type="text" th:name="|dias[${diaStat.index}].items[${itemStat.index}].ejercicio|" th:value="${item.ejercicio}" class="table-input" placeholder="Ej: Press Banca" /></td>
+                                    <td><input type="text" th:name="|dias[${diaStat.index}].items[${itemStat.index}].peso|" th:value="${item.peso}" class="table-input" placeholder="Ej: 60 kg" /></td>
+                                    <td><input type="text" th:name="|dias[${diaStat.index}].items[${itemStat.index}].repeticionesSeries|" th:value="${item.repeticionesSeries}" class="table-input" placeholder="Ej: 4x12" /></td>
+                                    <td><input type="text" th:name="|dias[${diaStat.index}].items[${itemStat.index}].aumentoPesoSemanal|" th:value="${item.aumentoPesoSemanal}" class="table-input" placeholder="Ej: +2.5 kg" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="margin-top: 18px;">
+                        <button type="button" class="btn btn-secondary btn-sm" th:onclick="'agregarFila(' + ${diaStat.index} + ')' ">+ Agregar Ejercicio</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="routine-actions">
+                <button type="button" class="btn btn-secondary" onclick="agregarDia()">➕ Agregar Nuevo Día</button>
+                <button type="submit" class="btn btn-primary">💾 Guardar Rutina Completa</button>
+            </div>
+
+        </form>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; Genesis Gym - Sistema de Gestión</p>
+    </footer>
+
+    <script>
+        let diaIndex = 1; 
+        let itemIndices = { 0: 3 };
+
+        function agregarFila(dIndex) {
+            if (itemIndices[dIndex] === undefined) {
+                itemIndices[dIndex] = 0;
+            }
+            
+            let iIndex = itemIndices[dIndex];
+            const tbody = document.getElementById('cuerpo-tabla-' + dIndex);
+            const nuevaFila = document.createElement('tr');
+
+            nuevaFila.innerHTML = `
+                <td><input type="text" name="dias[${dIndex}].items[${iIndex}].ejercicio" class="table-input" placeholder="Ej: Sentadillas" /></td>
+                <td><input type="text" name="dias[${dIndex}].items[${iIndex}].peso" class="table-input" placeholder="Ej: 80 kg" /></td>
+                <td><input type="text" name="dias[${dIndex}].items[${iIndex}].repeticionesSeries" class="table-input" placeholder="Ej: 4x12"/></td>
+                <td><input type="text" name="dias[${dIndex}].items[${iIndex}].aumentoPesoSemanal" class="table-input" placeholder="Ej: +2.5 kg" /></td>
+            `;
+
+            tbody.appendChild(nuevaFila);
+            itemIndices[dIndex]++; 
+        }
+
+        function agregarDia() {
+            const contenedor = document.getElementById('contenedor-dias');
+            const dIndex = diaIndex; 
+            
+            itemIndices[dIndex] = 0; 
+            
+            const divBloque = document.createElement('div');
+            divBloque.className = 'routine-day-card';
+            divBloque.id = 'dia-' + dIndex;
+            
+            divBloque.innerHTML = `
+                <div class="routine-day-header">
+                    <label>Día:</label>
+                    <input type="text" name="dias[${dIndex}].nombre" placeholder="Ej: Martes - Piernas" class="table-input" style="max-width: 320px;" required />
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 35%;">Ejercicio</th>
+                                <th style="width: 20%;">Peso</th>
+                                <th style="width: 20%;">Series / Reps</th>
+                                <th style="width: 25%;">Aumento Semanal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-tabla-${dIndex}">
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 18px;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="agregarFila(${dIndex})">+ Agregar Ejercicio</button>
+                </div>
+            `;
+            
+            contenedor.appendChild(divBloque);
+            agregarFila(dIndex);
+            diaIndex++; 
+        }
+    </script>
+
+</body>
+</html>

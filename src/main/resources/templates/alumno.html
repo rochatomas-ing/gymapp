@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Rutina - GymApp</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="dashboard-page alumno-dashboard">
+
+    <!-- 1. BARRA DE NAVEGACIÓN SUPERIOR (Top Bar) -->
+    <header class="top-nav">
+        <div class="nav-brand">
+            <!-- Logo que actúa como botón de recarga/inicio -->
+            <a th:href="@{/login}">
+                <img th:src="@{/images/logo.jpg}" alt="Genesis Gym" class="gym-logo">
+            </a>
+        </div>
+        <nav class="nav-actions">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar Sesión</a>
+        </nav>
+    </header>
+
+    <!-- 2. CONTENIDO PRINCIPAL -->
+    <main class="dashboard-main">
+
+        <!-- Banner de Bienvenida -->
+        <section class="welcome-banner text-center">
+            <h2>¡Hola, <span th:text="${alumno.nombre}">Alumno</span>! 💪</h2>
+            <p>Aquí tienes tu plan de entrenamiento actualizado.</p>
+        </section>
+
+        <!-- Sección Principal de Rutina -->
+        <section class="routine-section">
+
+            <!-- Estado 1: El alumno no tiene rutina asignada -->
+            <article th:if="${rutina == null}" class="empty-state-card text-center">
+                <div class="empty-icon">🏋️‍♂️</div>
+                <h3>Aún no tienes una rutina asignada</h3>
+                <p>Tu profesor está trabajando en ella. Consulta con él para que te la habilite pronto.</p>
+            </article>
+
+            <!-- Estado 2: El alumno tiene rutina cargada -->
+            <article th:if="${rutina != null}" class="routine-card">
+
+                <header class="routine-card-header">
+                    <div class="headline">
+                        <h3>Tu rutina es esta</h3>
+                        <p class="subtitle">Sigue tu progreso semana a semana</p>
+                    </div>
+
+                    <!-- Botones de Acción (Grandes y táctiles para mobile) -->
+                    <div class="routine-actions">
+                        <a th:href="@{/alumno/rutina/pdf}" class="btn btn-secondary">📄 Descargar PDF</a>
+                        <button type="button" id="btnCompartir" onclick="compartirRutina()" class="btn btn-primary">📲 Compartir</button>
+                    </div>
+                </header>
+
+                <!-- Bloque de Días (Tarjetas por día) -->
+                <div class="routine-days">
+                    <section th:each="dia : ${rutina.dias}" class="day-card">
+
+                        <header class="day-header">
+                            <h4 th:text="'Día: ' + ${dia.nombre}">Día: Lunes</h4>
+                        </header>
+
+                        <!-- Wrapper para scroll horizontal fluido en celulares si la tabla es ancha -->
+                        <div class="table-responsive">
+                            <table class="routine-table" border="1">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Ejercicio</th>
+                                        <th scope="col">Peso</th>
+                                        <th scope="col">Rep/Series</th>
+                                        <th scope="col">Aumento Semanal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Filas con datos -->
+                                    <tr th:each="item : ${dia.items}">
+                                        <td th:text="${item.ejercicio}">Press plano</td>
+                                        <td th:text="${item.peso}">20kg por lado</td>
+                                        <td th:text="${item.repeticionesSeries}">8x4</td>
+                                        <td th:text="${item.aumentoPesoSemanal}">+2.5kg</td>
+                                    </tr>
+                                    <!-- Fallback si un día no tiene ejercicios cargados -->
+                                    <tr th:if="${#lists.isEmpty(dia.items)}">
+                                        <td colspan="4" class="text-center">No hay ejercicios registrados para este día.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </section>
+                </div>
+
+            </article>
+
+        </section>
+    </main>
+
+    <!-- 3. PIE DE PÁGINA -->
+    <footer class="main-footer">
+        <p>&copy; 2026 GymApp. ¡A darlo todo en el entrenamiento!</p>
+    </footer>
+
+    <!-- Script para compartir -->
+    <script>
+        function compartirRutina() {
+            const textoShare = "¡Hola! Te comparto mi rutina de entrenamiento de GymApp. 💪";
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Mi Rutina de Entrenamiento',
+                    text: textoShare,
+                    url: window.location.href
+                }).catch(err => console.log('Acción cancelada o no soportada:', err));
+            } else {
+                const wpUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(textoShare + ' ' + window.location.href)}`;
+                window.open(wpUrl, '_blank');
+            }
+        }
+    </script>
+</body>
+</html>

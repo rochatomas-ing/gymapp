@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Alumnos - GymApp</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="dashboard-profesor">
+
+    <!-- 1. BARRA DE NAVEGACIÓN SUPERIOR CON LOGO -->
+    <header class="top-nav">
+        <div class="nav-brand">
+            <!-- Logo que actúa como botón "Volver al Dashboard" -->
+            <a th:href="@{/profesor}">
+                <img th:src="@{/images/logo.jpg}" alt="Genesis Gym" class="gym-logo">
+            </a>
+        </div>
+
+        <nav class="nav-user">
+            <span class="user-greeting">
+                Profesor: <strong th:text="${profesor.nombre}">Nombre Profesor</strong>
+            </span>
+            <a th:href="@{/logout}" class="btn-logout">Cerrar Sesión</a>
+        </nav>
+    </header>
+
+    <!-- 2. CONTENIDO PRINCIPAL -->
+    <main class="dashboard-main">
+
+        <!-- Header de la sección -->
+        <section class="welcome-banner">
+            <div class="welcome-text">
+                <h2>Panel de Gestión de Alumnos</h2>
+                <p>Busca alumnos, actualiza cuotas mensuales y asigna o edita rutinas.</p>
+            </div>
+        </section>
+
+        <!-- Mensajes de Alerta -->
+        <div th:if="${param.exito}" class="alert alert-success" role="alert">
+            <span class="alert-icon">✅</span>
+            <span><strong>¡Excelente!</strong> La rutina se ha creado y guardado con éxito.</span>
+        </div>
+
+        <!-- Tarjeta de Búsqueda y Filtro -->
+        <section class="search-card">
+            <form th:action="@{/profesor/alumnos}" method="get" class="search-form">
+                <div class="search-input-group">
+                    <input type="text" 
+                           name="nombre" 
+                           placeholder="Buscar por nombre..." 
+                           th:value="${nombreFiltro}"
+                           class="form-control">
+                    <button type="submit" class="btn btn-primary">🔍 Buscar</button>
+                    <a th:if="${nombreFiltro != null and !nombreFiltro.isBlank()}" 
+                       th:href="@{/profesor/alumnos}" 
+                       class="btn btn-link">Limpiar filtro</a>
+                </div>
+            </form>
+        </section>
+
+        <!-- Tarjeta Principal con Tabla de Alumnos -->
+        <section class="table-card">
+            
+            <!-- Wrapper responsivo para scroll horizontal en celulares -->
+            <div class="table-responsive">
+                <table class="data-table" border="1">
+                    <thead>
+                        <tr>
+                            <th scope="col">DNI</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Estado de Cuota</th>
+                            <th scope="col">Acciones Cuota</th>
+                            <th scope="col">Acciones Rutina</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Iteración de Alumnos -->
+                        <tr th:each="alumno : ${alumnos}">
+                            <td th:text="${alumno.dni}" class="text-nowrap">40123456</td>
+                            <td th:text="${alumno.nombre}" class="font-bold">Juan Pérez</td>
+                            <td th:text="${alumno.email}">juan@gmail.com</td>
+
+                            <!-- Estado de Cuota -->
+                            <td class="status-cell">
+                                <div th:if="${alumno.cuotaAlDia}" class="status-badge badge-success">
+                                    <span class="status-label">AL DÍA</span>
+                                    <small class="status-detail" th:text="'Último pago: ' + ${alumno.fechaUltimoPago}"></small>
+                                    <small class="status-detail" th:text="'Vence el: ' + ${alumno.fechaVencimiento}"></small>
+                                </div>
+                                <div th:unless="${alumno.cuotaAlDia}" class="status-badge badge-danger">
+                                    <span class="status-label">PENDIENTE</span>
+                                    <small th:if="${alumno.fechaUltimoPago != null}" 
+                                           class="status-detail"
+                                           th:text="'Venció el: ' + ${alumno.fechaVencimiento}">
+                                    </small>
+                                    <small th:if="${alumno.fechaUltimoPago == null}" class="status-detail">Sin pagos registrados</small>
+                                </div>
+                            </td>
+
+                            <!-- Acciones de Cuota -->
+                            <td class="actions-cell">
+                                <!-- Formulario Registrar Pago -->
+                                <form th:action="@{/profesor/alumnos/actualizar-cuota}" method="post" class="form-inline-action">
+                                    <input type="hidden" name="alumnoDni" th:value="${alumno.dni}">
+                                    <input type="hidden" name="nombreFiltro" th:value="${nombreFiltro}">
+                                    
+                                    <input type="date" 
+                                           name="fechaPago" 
+                                           th:value="${hoy}" 
+                                           required 
+                                           class="input-date">
+
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        💵 Registrar
+                                    </button>
+                                </form>
+                                
+                                <!-- Formulario Anular Pago -->
+                                <form th:if="${alumno.fechaUltimoPago != null}" th:action="@{/profesor/alumnos/anular-cuota}" method="post" class="form-inline-action mt-1">
+                                    <input type="hidden" name="alumnoDni" th:value="${alumno.dni}">
+                                    <input type="hidden" name="nombreFiltro" th:value="${nombreFiltro}">
+                                    
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        ❌ Anular
+                                    </button>
+                                </form>
+                            </td>
+
+                            <!-- Acciones de Rutina -->
+                            <td class="actions-cell">
+                                <div class="btn-group-actions">
+                                    <button type="button"
+                                            th:data-dni="${alumno.dni}"
+                                            th:data-nombre="${alumno.nombre}"
+                                            onclick="confirmarCrearRutina(this)"
+                                            class="btn btn-sm btn-primary">
+                                        📝 Crear
+                                    </button> 
+                                    
+                                    <a th:href="@{/profesor/rutinas/editar/{dni}(dni=${alumno.dni})}" 
+                                       class="btn btn-sm btn-secondary">
+                                        ⚙️ Modificar
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Estado vacío -->
+                        <tr th:if="${#lists.isEmpty(alumnos)}">
+                            <td colspan="6" class="text-center empty-table-msg">
+                                No se encontraron alumnos asignados o no coinciden con la búsqueda.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- 3. PIE DE PÁGINA -->
+    <footer class="main-footer">
+        <p>&copy; 2026 GymApp. Sistema de Gestión para Profesores.</p>
+    </footer>
+
+    <!-- Script para procesamiento de acciones -->
+    <script>
+        function confirmarCrearRutina(boton) {
+            const dni = boton.getAttribute('data-dni');
+            const nombre = boton.getAttribute('data-nombre');
+
+            const respuesta = confirm('¿Desea eliminar la rutina actual del alumno "' + nombre + '" para crear una nueva?');
+            if (respuesta) {
+                window.location.href = '/profesor/rutinas/crear/' + dni + '?eliminarAnterior=true';
+            }
+        }
+    </script>
+</body>
+</html>
