@@ -8,11 +8,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.gymapp.gymapp.entity.Alumno;
+import com.gymapp.gymapp.entity.Rutina;
 import com.gymapp.gymapp.entity.Usuario;
+import com.gymapp.gymapp.service.RutinaService;
 import com.gymapp.gymapp.service.UsuarioService;
 
 import jakarta.servlet.http.HttpSession;
@@ -21,6 +24,9 @@ import jakarta.servlet.http.HttpSession;
 public class ProfesorController {
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private RutinaService rutinaService;
 
     // Endpoint para ver el Dashboard Principal del Profesor
     @GetMapping("/profesor")
@@ -84,9 +90,7 @@ public class ProfesorController {
 
     // Endpoint para anular/borrar el último pago de un alumno
     @PostMapping("/profesor/alumnos/anular-cuota")
-    public String anularCuota(@RequestParam String alumnoDni, 
-                              @RequestParam(required = false) String nombreFiltro,
-                              HttpSession session) {
+    public String anularCuota(@RequestParam String alumnoDni, @RequestParam(required = false) String nombreFiltro, HttpSession session) {
         
         Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
         if (usuarioLogueado == null || !"PROFESOR".equals(usuarioLogueado.getRol())) {
@@ -101,5 +105,16 @@ public class ProfesorController {
             return "redirect:/profesor/alumnos?nombre=" + nombreFiltro;
         }
         return "redirect:/profesor/alumnos";
+    }
+
+    @GetMapping("/profesor/rutinas/ver/{dni}")
+    public String verRutinaAlumno(@PathVariable("dni") String dni, Model model) {
+        Usuario alumno = usuarioService.buscarPorDni(dni);
+        Rutina rutina = rutinaService.buscarRutinaPorAlumno(dni);
+        
+        // Es clave que los nombres en la comilla coincidan exacto con el HTML
+        model.addAttribute("alumno", alumno);
+        model.addAttribute("rutina", rutina);
+        return "ver-rutina"; //
     }
 }

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Rutina - GymApp</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="dashboard-profesor">
+
+    <!-- 1. BARRA DE NAVEGACIÓN SUPERIOR -->
+    <header class="top-nav">
+        <div class="nav-brand">
+            <a th:href="@{/profesor}">
+                <img th:src="@{/images/logo.png}" alt="Genesis Gym" class="gym-logo">
+            </a>
+        </div>
+
+        <nav class="nav-user">
+            <span class="user-greeting">
+                Profesor: <strong th:text="${profesor != null ? profesor.nombre : 'Entrenador'}">Nombre Profesor</strong>
+            </span>
+            <a th:href="@{/logout}" class="btn-logout">Cerrar Sesión</a>
+        </nav>
+    </header>
+
+    <!-- 2. CONTENIDO PRINCIPAL -->
+    <main class="dashboard-main">
+
+        <!-- Encabezado del Alumno -->
+        <section class="welcome-banner view-routine-header" th:if="${alumno != null}">
+            <div class="header-top-bar">
+                <a th:href="@{/profesor/alumnos}" class="btn-back">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    Volver a Alumnos
+                </a>
+
+                <div class="header-actions" th:if="${rutina != null}">
+                    <a th:href="@{/profesor/rutinas/editar/{dni}(dni=${alumno.dni})}" class="btn btn-sm btn-secondary btn-edit-routine">
+                        ⚙️ Modificar esta Rutina
+                    </a>
+                </div>
+            </div>
+
+            <div class="student-info-detail">
+                <div class="student-avatar-large">🏋️‍♂️</div>
+                <div class="student-text-info">
+                    <h2>Rutina de: <span th:text="${alumno.nombre}">Juan Pérez</span></h2>
+                    <p>DNI: <strong th:text="${alumno.dni}">40123456</strong> | Email: <span th:text="${alumno.email}">juan@gmail.com</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ESTADO 1: No tiene rutina -->
+        <section th:if="${rutina == null and alumno != null}" class="empty-state-card">
+            <div class="empty-icon">📂</div>
+            <h3>El alumno no tiene una rutina asignada</h3>
+            <p>Puedes crearle un nuevo plan de entrenamiento presionando el botón a continuación.</p>
+            <a th:href="@{/profesor/rutinas/crear/{dni}(dni=${alumno.dni})}" class="btn btn-primary mt-3">
+                📝 Crear Rutina Ahora
+            </a>
+        </section>
+
+        <!-- ESTADO 2: Visualización de Rutina -->
+        <section th:if="${rutina != null}" class="routine-section">
+
+            <div class="routine-days-accordion">
+                
+                <div th:each="dia, iter : ${rutina.dias}" class="accordion-item">
+                    
+                    <!-- Cabecera del Día -->
+                    <button type="button" 
+                            class="accordion-header" 
+                            th:classappend="${iter.first ? 'active' : ''}">
+                        <div class="day-info">
+                            <span class="day-badge" th:text="${dia.nombre != null ? dia.nombre : 'Día ' + iter.count}">Lunes</span>
+                        </div>
+                        <svg class="accordion-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+
+                    <!-- Bloque Desplegable del Día -->
+                    <div class="accordion-content" 
+                         th:style="${iter.first ? 'display: block;' : 'display: none;'}">
+                        <div class="day-tables-wrapper">
+                            
+                            <!-- BLOQUE 1: CALENTAMIENTO -->
+                            <div class="table-block">
+                                <h4 class="table-section-title">Calentamiento</h4>
+                                <div class="table-responsive">
+                                    <table class="routine-table warmup-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Ejercicio</th>
+                                                <th>Peso</th>
+                                                <th>Repeticiones / Series</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="item : ${dia.items}" th:if="${item != null and item.esCalentamiento}">
+                                                <td class="font-bold" th:text="${item.ejercicio != null ? item.ejercicio : '-'}">Movilidad articular</td>
+                                                <td th:text="${item.peso != null ? item.peso : '-'}">Sin peso</td>
+                                                <td th:text="${item.repeticionesSeries != null ? item.repeticionesSeries : '-'}">12x3</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- BLOQUE 2: RUTINA PRINCIPAL -->
+                            <div class="table-block">
+                                <h4 class="table-section-title">Rutina Principal</h4>
+                                <div class="table-responsive">
+                                    <table class="routine-table main-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Ejercicio</th>
+                                                <th>Peso Inicial</th>
+                                                <th>Reps / Series</th>
+                                                <th class="col-progression">Sem 2</th>
+                                                <th class="col-progression">Sem 3</th>
+                                                <th class="col-progression">Sem 4</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="item : ${dia.items}" th:if="${item != null and !item.esCalentamiento}">
+                                                <td class="col-exercise font-bold" th:text="${item.ejercicio != null ? item.ejercicio : '-'}">Press Plano</td>
+                                                <td th:text="${item.peso != null ? item.peso : '-'}">20kg por lado</td>
+                                                <td th:text="${item.repeticionesSeries != null ? item.repeticionesSeries : '-'}">8x4</td>
+                                                <td class="col-progression" th:text="${item.sem2 != null ? item.sem2 : '-'}">+2 rep</td>
+                                                <td class="col-progression" th:text="${item.sem3 != null ? item.sem3 : '-'}">+2 rep</td>
+                                                <td class="col-progression" th:text="${item.sem4 != null ? item.sem4 : '-'}">+2.5kg</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- 3. PIE DE PÁGINA -->
+    <footer class="main-footer">
+        <p>&copy; 2026 GymApp. Sistema de Gestión para Profesores.</p>
+    </footer>
+
+    <!-- Script del Acordeón -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const isOpen = header.classList.contains('active');
+
+                    accordionHeaders.forEach(otherHeader => {
+                        otherHeader.classList.remove('active');
+                        if (otherHeader.nextElementSibling) {
+                            otherHeader.nextElementSibling.style.display = 'none';
+                        }
+                    });
+
+                    if (!isOpen && content) {
+                        header.classList.add('active');
+                        content.style.display = 'block';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

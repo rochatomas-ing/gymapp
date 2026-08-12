@@ -13,7 +13,7 @@
         <div class="nav-brand">
             <!-- Logo del gimnasio que vuelve al inicio o login -->
             <a th:href="@{/login}" class="logo-link" title="Ir al inicio de sesión">
-                <img src="@{/images/logo.jpg}" alt="Genesis Gym" class="gym-logo" />
+                <img th:src="@{/images/logo.png}" alt="Genesis Gym" class="gym-logo" />
             </a>
         </div>
         <nav class="nav-actions">
@@ -27,8 +27,8 @@
 
             <!-- Encabezado de la Tarjeta -->
             <header class="auth-card-header text-center">
-                <h2>Únete a GymApp 💪</h2>
-                <p>Crea tu cuenta de profesor o alumno para comenzar.</p>
+                <h2>Añadir un nuevo usuario</h2>
+                <p>Crea una nueva cuenta.</p>
             </header>
 
             <!-- Alerta de Error (si viene desde el controlador) -->
@@ -42,7 +42,7 @@
                 
                 <!-- DNI -->
                 <div class="form-group">
-                    <label for="dni">DNI <small>(Será tu usuario de acceso)</small></label>
+                    <label for="dni">DNI</label>
                     <input type="text" 
                            id="dni" 
                            name="dni" 

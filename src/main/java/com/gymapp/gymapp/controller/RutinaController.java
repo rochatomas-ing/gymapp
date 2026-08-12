@@ -1,7 +1,7 @@
 package com.gymapp.gymapp.controller;
 
-// Imports de Spring Framework para la web y rutas
 import java.time.LocalDate;
+import java.util.Iterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,67 +25,95 @@ import com.gymapp.gymapp.service.UsuarioService;
 public class RutinaController {
 
     @Autowired
-    private UsuarioService usuarioService; // O tu service para Alumnos
-    @Autowired
-    private RutinaService rutinaService;   // El service que vayas a crear para Rutinas
+    private UsuarioService usuarioService;
 
+    @Autowired
+    private RutinaService rutinaService;
+
+    // 1. CREAR RUTINA DESDE CERO
     @GetMapping("/crear/{dni}")
     public String mostrarFormularioCreacion(
-            @PathVariable String dni, 
+            @PathVariable String dni,
             @RequestParam(name = "eliminarAnterior", defaultValue = "false") boolean eliminarAnterior,
             Model model) {
 
-        // 1. Buscás al alumno
         Alumno alumno = (Alumno) usuarioService.buscarPorDni(dni);
 
-        // 2. Si apretó Aceptar en el cartel, borramos la rutina vieja
+        // Si se confirmó el cartel de advertencia, borramos la rutina previa
         if (eliminarAnterior) {
             rutinaService.eliminarRutinaPorAlumno(dni);
         }
 
-        // 3. Preparamos la rutina nueva en blanco
+        // Armamos la plantilla vacía
         Rutina rutina = new Rutina();
         rutina.setAlumno(alumno);
 
-        DiaRutina diaInicial = new DiaRutina();
-        diaInicial.setNombre(""); 
-        diaInicial.agregarItem(new ItemRutina());
-        diaInicial.agregarItem(new ItemRutina());
-        diaInicial.agregarItem(new ItemRutina());
+        // ✅ Creamos ÚNICAMENTE el Día 1
+        DiaRutina dia1 = new DiaRutina("Día 1");
 
-        rutina.agregarDia(diaInicial);
+        // Pre-cargamos filas iniciales para el Día 1 (ejemplo: 1 de calentamiento y 1 principal)
+        ItemRutina itemCalentamiento = new ItemRutina();
+        itemCalentamiento.setEsCalentamiento(true);
+        dia1.agregarItem(itemCalentamiento);
+
+        ItemRutina itemPrincipal = new ItemRutina();
+        itemPrincipal.setEsCalentamiento(false);
+        dia1.agregarItem(itemPrincipal);
+
+        // Agregamos solo este día a la rutina
+        rutina.agregarDia(dia1);
 
         model.addAttribute("rutina", rutina);
-
-        return "crear-rutina"; 
+        return "crear-rutina";
     }
 
-    // 2. Recibir y guardar la rutina
+    @GetMapping("/editar/{dni}")
+    public String editarRutina(@PathVariable("dni") String dni, Model model) {
+        Rutina rutina = rutinaService.buscarRutinaPorAlumno(dni);
+
+        model.addAttribute("rutina", rutina);
+        
+        // Retorna la vista directamente dentro de templates/ (o "profesor/editar-rutina" si usas subcartera)
+        return "editar-rutina";
+    }
+
+    // 3. GUARDAR O ACTUALIZAR
     @PostMapping("/guardar")
     public String guardarRutina(@ModelAttribute Rutina rutina) {
         
-        // 1. Recuperamos el alumno por su DNI para mantener la relación intacta
+        // Re-vinculamos al alumno para asegurar la FK
         if (rutina.getAlumno() != null && rutina.getAlumno().getDni() != null) {
             Alumno alumno = (Alumno) usuarioService.buscarPorDni(rutina.getAlumno().getDni());
             rutina.setAlumno(alumno);
         }
 
-        // 2. Enlazamos la jerarquía completa (Rutina -> Día -> Item)
+        // Sincronizamos las relaciones bidireccionales y filtramos filas no completadas
         if (rutina.getDias() != null) {
             for (DiaRutina dia : rutina.getDias()) {
                 dia.setRutina(rutina);
+
                 if (dia.getItems() != null) {
-                    for (ItemRutina item : dia.getItems()) {
-                        item.setDiaRutina(dia);
+                    Iterator<ItemRutina> iterator = dia.getItems().iterator();
+                    while (iterator.hasNext()) {
+                        ItemRutina item = iterator.next();
+                        
+                        // Si la fila no tiene nombre de ejercicio, no la persistimos
+                        if (item.getEjercicio() == null || item.getEjercicio().trim().isEmpty()) {
+                            iterator.remove();
+                        } else {
+                            item.setDiaRutina(dia);
+                        }
                     }
                 }
             }
         }
         
-        rutina.setFechaCreacion(LocalDate.now());
+        if (rutina.getFechaCreacion() == null) {
+            rutina.setFechaCreacion(LocalDate.now());
+        }
+
         rutinaService.guardarRutina(rutina);
         
-        // Redirigimos a la vista del profesor enviando el parámetro 'exito'
-        return "redirect:/profesor/alumnos?exito=RutinaCreada";
+        return "redirect:/profesor/alumnos?exito=RutinaGuardada";
     }
 }

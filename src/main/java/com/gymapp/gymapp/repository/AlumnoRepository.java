@@ -1,9 +1,11 @@
 package com.gymapp.gymapp.repository;
 
-import com.gymapp.gymapp.entity.Alumno;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import java.util.List;
+
+import com.gymapp.gymapp.entity.Alumno;
 
 @Repository
 public interface AlumnoRepository extends JpaRepository<Alumno, String>{

@@ -8,95 +8,172 @@
 </head>
 <body class="dashboard-page alumno-dashboard">
 
-    <!-- 1. BARRA DE NAVEGACIÓN SUPERIOR (Top Bar) -->
+    <!-- 1. BARRA DE NAVEGACIÓN SUPERIOR -->
     <header class="top-nav">
-        <div class="nav-brand">
-            <!-- Logo que actúa como botón de recarga/inicio -->
-            <a th:href="@{/login}">
-                <img th:src="@{/images/logo.jpg}" alt="Genesis Gym" class="gym-logo">
-            </a>
+        <div class="top-nav-container">
+            <div class="nav-brand">
+                <img th:src="@{/images/logo.png}" alt="Genesis Gym" class="gym-logo">
+            </div>
+
+            <!-- Menú de Usuario -->
+            <div class="user-profile-menu">
+                <button type="button" class="profile-trigger" id="profileTrigger">
+                    <div class="avatar-circle">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <span class="user-name-display" th:text="${alumno != null and alumno.nombre != null ? alumno.nombre : 'Alumno'}">Alumno</span>
+                    <svg class="chevron-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="dropdown-header">
+                        <p class="dropdown-user-name" th:text="${alumno != null and alumno.nombre != null ? alumno.nombre : 'Alumno'}">Alumno</p>
+                        <span class="dropdown-user-role">Miembro</span>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <a th:href="@{/logout}" class="dropdown-item dropdown-logout">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Cerrar Sesión
+                    </a>
+                </div>
+            </div>
         </div>
-        <nav class="nav-actions">
-            <a th:href="@{/logout}" class="btn-logout">Cerrar Sesión</a>
-        </nav>
     </header>
 
     <!-- 2. CONTENIDO PRINCIPAL -->
     <main class="dashboard-main">
 
         <!-- Banner de Bienvenida -->
-        <section class="welcome-banner text-center">
-            <h2>¡Hola, <span th:text="${alumno.nombre}">Alumno</span>! 💪</h2>
-            <p>Aquí tienes tu plan de entrenamiento actualizado.</p>
+        <section class="welcome-banner">
+            <div class="welcome-text">
+                <h2>¡Hola, <span th:text="${alumno != null and alumno.nombre != null ? alumno.nombre : 'Alumno'}">Alumno</span>!</h2>
+                <p>Aquí tienes tu plan de entrenamiento personalizado y actualizado.</p>
+            </div>
         </section>
 
         <!-- Sección Principal de Rutina -->
         <section class="routine-section">
 
-            <!-- Estado 1: El alumno no tiene rutina asignada -->
-            <article th:if="${rutina == null}" class="empty-state-card text-center">
+            <!-- ESTADO 1: El alumno no tiene rutina asignada -->
+            <article th:if="${rutina == null}" class="empty-state-card">
                 <div class="empty-icon">🏋️‍♂️</div>
                 <h3>Aún no tienes una rutina asignada</h3>
-                <p>Tu profesor está trabajando en ella. Consulta con él para que te la habilite pronto.</p>
+                <p>Tu profesor está preparando tu plan. En cuanto lo guarde, aparecerá reflejado aquí.</p>
             </article>
 
-            <!-- Estado 2: El alumno tiene rutina cargada -->
-            <article th:if="${rutina != null}" class="routine-card">
+            <!-- ESTADO 2: El alumno tiene rutina cargada -->
+            <article th:if="${rutina != null}" class="routine-container">
 
-                <header class="routine-card-header">
-                    <div class="headline">
-                        <h3>Tu rutina es esta</h3>
-                        <p class="subtitle">Sigue tu progreso semana a semana</p>
+                <header class="routine-header-actions">
+                    <div class="routine-title-info">
+                        <h3>Plan de Entrenamiento</h3>
+                        <span class="badge-status">Activa</span>
                     </div>
 
-                    <!-- Botones de Acción (Grandes y táctiles para mobile) -->
                     <div class="routine-actions">
-                        <a th:href="@{/alumno/rutina/pdf}" class="btn btn-secondary">📄 Descargar PDF</a>
-                        <button type="button" id="btnCompartir" onclick="compartirRutina()" class="btn btn-primary">📲 Compartir</button>
+                        <a th:href="@{/alumno/rutina/pdf}" class="btn-action btn-pdf">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
+                            Descargar PDF
+                        </a>
+                        <button type="button" onclick="compartirRutina()" class="btn-action btn-share">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                            </svg>
+                            Compartir PDF
+                        </button>
                     </div>
                 </header>
 
-                <!-- Bloque de Días (Tarjetas por día) -->
-                <div class="routine-days">
-                    <section th:each="dia : ${rutina.dias}" class="day-card">
+                <!-- Acordeón de Días -->
+                <div class="routine-days-accordion">
+                    
+                    <div th:each="dia, iter : ${rutina.dias}" class="accordion-item">
+                        
+                        <!-- Botón del Día -->
+                        <button type="button" class="accordion-header" th:classappend="${iter.first} ? 'active' : ''">
+                            <div class="day-info">
+                                <!-- Muestra únicamente lo que puso el profesor en la etiqueta verde -->
+                                <span class="day-badge" th:text="${dia.nombre ?: 'Día ' + iter.count}">Lunes</span>
+                            </div>
+                            <svg class="accordion-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
 
-                        <header class="day-header">
-                            <h4 th:text="'Día: ' + ${dia.nombre}">Día: Lunes</h4>
-                        </header>
+                        <!-- Contenido Desplegable del Día -->
+                        <div class="accordion-content" th:style="${iter.first} ? 'display: block;' : 'display: none;'">
+                            <div class="day-tables-wrapper">
+                                
+                                <!-- BLOQUE 1: CALENTAMIENTO -->
+                                <div class="table-block">
+                                    <h4 class="table-section-title"> Calentamiento</h4>
+                                    <div class="table-responsive">
+                                        <table class="routine-table warmup-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Ejercicio</th>
+                                                    <th>Peso</th>
+                                                    <th>Repeticiones / Series</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="item : ${dia.items}" th:if="${item != null and item.esCalentamiento}">
+                                                    <td th:text="${item.ejercicio ?: '-'}">Movilidad articular</td>
+                                                    <td th:text="${item.peso ?: '-'}">Sin peso</td>
+                                                    <td th:text="${item.repeticionesSeries ?: '-'}">12x3</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
 
-                        <!-- Wrapper para scroll horizontal fluido en celulares si la tabla es ancha -->
-                        <div class="table-responsive">
-                            <table class="routine-table" border="1">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Ejercicio</th>
-                                        <th scope="col">Peso</th>
-                                        <th scope="col">Rep/Series</th>
-                                        <th scope="col">Aumento Semanal</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Filas con datos -->
-                                    <tr th:each="item : ${dia.items}">
-                                        <td th:text="${item.ejercicio}">Press plano</td>
-                                        <td th:text="${item.peso}">20kg por lado</td>
-                                        <td th:text="${item.repeticionesSeries}">8x4</td>
-                                        <td th:text="${item.aumentoPesoSemanal}">+2.5kg</td>
-                                    </tr>
-                                    <!-- Fallback si un día no tiene ejercicios cargados -->
-                                    <tr th:if="${#lists.isEmpty(dia.items)}">
-                                        <td colspan="4" class="text-center">No hay ejercicios registrados para este día.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                <!-- BLOQUE 2: RUTINA PRINCIPAL -->
+                                <div class="table-block">
+                                    <h4 class="table-section-title"> Rutina Principal</h4>
+                                    <div class="table-responsive">
+                                        <table class="routine-table main-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Ejercicio</th>
+                                                    <th>Peso Inicial</th>
+                                                    <th>Repeticiones / Series</th>
+                                                    <th class="col-progression">Sem 2</th>
+                                                    <th class="col-progression">Sem 3</th>
+                                                    <th class="col-progression">Sem 4</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="item : ${dia.items}" th:if="${item != null and not item.esCalentamiento}">
+                                                    <td class="col-exercise" th:text="${item.ejercicio ?: '-'}">Press Plano</td>
+                                                    <td th:text="${item.peso ?: '-'}">20kg por lado</td>
+                                                    <td th:text="${item.repeticionesSeries ?: '-'}">8x4</td>
+                                                    <td class="col-progression" th:text="${item.sem2 ?: '-'}">+2 rep</td>
+                                                    <td class="col-progression" th:text="${item.sem3 ?: '-'}">+2 rep</td>
+                                                    <td class="col-progression" th:text="${item.sem4 ?: '-'}">+2.5kg</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
 
-                    </section>
+                    </div>
+
                 </div>
 
             </article>
 
         </section>
+
     </main>
 
     <!-- 3. PIE DE PÁGINA -->
@@ -104,19 +181,88 @@
         <p>&copy; 2026 GymApp. ¡A darlo todo en el entrenamiento!</p>
     </footer>
 
-    <!-- Script para compartir -->
+    <!-- 4. SCRIPTS (Acordeón + Compartir + Menú Perfil) -->
     <script>
-        function compartirRutina() {
-            const textoShare = "¡Hola! Te comparto mi rutina de entrenamiento de GymApp. 💪";
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lógica de Menú Desplegable de Perfil
+            const trigger = document.getElementById('profileTrigger');
+            const dropdown = document.getElementById('profileDropdown');
 
+            if (trigger && dropdown) {
+                trigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    trigger.classList.toggle('active');
+                    dropdown.classList.toggle('show');
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!dropdown.contains(e.target) && !trigger.contains(e.target)) {
+                        trigger.classList.remove('active');
+                        dropdown.classList.remove('show');
+                    }
+                });
+            }
+
+            // Lógica del Acordeón para los días de rutina
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const isOpen = header.classList.contains('active');
+
+                    accordionHeaders.forEach(otherHeader => {
+                        otherHeader.classList.remove('active');
+                        if (otherHeader.nextElementSibling) {
+                            otherHeader.nextElementSibling.style.display = 'none';
+                        }
+                    });
+
+                    if (!isOpen && content) {
+                        header.classList.add('active');
+                        content.style.display = 'block';
+                    }
+                });
+            });
+        });
+
+        // Lógica para compartir el archivo PDF directo
+        async function compartirRutina() {
+            const pdfUrl = window.location.origin + '/alumno/rutina/pdf';
+            const textoShare = "¡Hola! Te comparto mi rutina de entrenamiento en Genesis Gym. 💪";
+
+            try {
+                // 1. Descargamos el archivo PDF temporalmente en memoria
+                const response = await fetch(pdfUrl);
+                if (!response.ok) throw new Error("No se pudo obtener el PDF");
+
+                const blob = await response.blob();
+                const file = new File([blob], 'Rutina_Genesis_Gym.pdf', { type: 'application/pdf' });
+
+                // 2. Si el navegador/dispositivo soporta compartir archivos directamente (Móviles / Tablets)
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        title: 'Mi Rutina de Entrenamiento',
+                        text: textoShare,
+                        files: [file]
+                    });
+                    return; // Compartido con éxito como archivo
+                }
+            } catch (err) {
+                console.log("No se pudo compartir el archivo PDF directamente, usando enlace alternativo:", err);
+            }
+
+            // 3. FALLBACK: Si no soporta enviar archivos o es una PC de escritorio
             if (navigator.share) {
+                // Menú nativo enviando el enlace al PDF
                 navigator.share({
                     title: 'Mi Rutina de Entrenamiento',
                     text: textoShare,
-                    url: window.location.href
-                }).catch(err => console.log('Acción cancelada o no soportada:', err));
+                    url: pdfUrl
+                }).catch(err => console.log('Compartir cancelado:', err));
             } else {
-                const wpUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(textoShare + ' ' + window.location.href)}`;
+                // Abrir WhatsApp Web/App directamente con el link al PDF
+                const wpUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(textoShare + ' ' + pdfUrl)}`;
                 window.open(wpUrl, '_blank');
             }
         }

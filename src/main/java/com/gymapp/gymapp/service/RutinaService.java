@@ -30,6 +30,7 @@ public class RutinaService {
     /**
      * Busca la rutina asignada a un alumno por su DNI.
      */
+    @Transactional
     public Rutina buscarRutinaPorAlumno(String dniAlumno) {
         return rutinaRepository.findByAlumnoDni(dniAlumno);
     }

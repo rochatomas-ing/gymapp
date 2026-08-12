@@ -19,7 +19,13 @@ public class ItemRutina {
     private String ejercicio;
     private String peso;
     private String repeticionesSeries;
-    private String aumentoPesoSemanal;
+
+    private String sem2;
+    private String sem3;
+    private String sem4;
+
+    // Identifica si es un ítem de Calentamiento (true) o de la Rutina principal (false)
+    private boolean esCalentamiento = false;
 
     @ManyToOne
     @JoinColumn(name = "dia_rutina_id")
@@ -28,11 +34,21 @@ public class ItemRutina {
     // --- CONSTRUCTORES ---
     public ItemRutina() {}
 
-    public ItemRutina(String ejercicio, String peso, String repeticionesSeries, String aumentoPesoSemanal) {
+    public ItemRutina(String ejercicio, String peso, String repeticionesSeries, boolean esCalentamiento) {
         this.ejercicio = ejercicio;
         this.peso = peso;
         this.repeticionesSeries = repeticionesSeries;
-        this.aumentoPesoSemanal = aumentoPesoSemanal;
+        this.esCalentamiento = esCalentamiento;
+    }
+
+    public ItemRutina(String ejercicio, String peso, String repeticionesSeries, String sem2, String sem3, String sem4, boolean esCalentamiento) {
+        this.ejercicio = ejercicio;
+        this.peso = peso;
+        this.repeticionesSeries = repeticionesSeries;
+        this.sem2 = sem2;
+        this.sem3 = sem3;
+        this.sem4 = sem4;
+        this.esCalentamiento = esCalentamiento;
     }
 
     // --- GETTERS Y SETTERS ---
@@ -48,8 +64,17 @@ public class ItemRutina {
     public String getRepeticionesSeries() { return this.repeticionesSeries; }
     public void setRepeticionesSeries(String repeticionesSeries) { this.repeticionesSeries = repeticionesSeries; }
 
-    public String getAumentoPesoSemanal() { return this.aumentoPesoSemanal; }
-    public void setAumentoPesoSemanal(String aumentoPesoSemanal) { this.aumentoPesoSemanal = aumentoPesoSemanal; }
+    public String getSem2() { return this.sem2; }
+    public void setSem2(String sem2) { this.sem2 = sem2; }
+
+    public String getSem3() { return this.sem3; }
+    public void setSem3(String sem3) { this.sem3 = sem3; }
+
+    public String getSem4() { return this.sem4; }
+    public void setSem4(String sem4) { this.sem4 = sem4; }
+
+    public boolean getEsCalentamiento() { return this.esCalentamiento; }
+    public void setEsCalentamiento(boolean esCalentamiento) { this.esCalentamiento = esCalentamiento; }
 
     public DiaRutina getDiaRutina() { return this.diaRutina; }
     public void setDiaRutina(DiaRutina diaRutina) { this.diaRutina = diaRutina; }

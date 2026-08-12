@@ -1,38 +1,44 @@
 /* ==========================================================================
-   GENESIS GYM - ULTRA MODERN DARK THEME
+   1. CONFIGURACIÓN DE IDENTIDAD Y MARCA DEL GIMNASIO (¡MODIFICAR SOLO AQUÍ!)
    ========================================================================== */
-
-/* 1. VARIABLES DE DISEÑO RENOVADAS */
 :root {
-    /* Paleta Principal Genesis */
-    --color-teal: #00A896;
-    --color-teal-glow: rgba(0, 168, 150, 0.25);
-    --color-coral: #E53955;
-    --color-coral-glow: rgba(229, 57, 85, 0.25);
+    /* --- COLOR PRINCIPAL (Botones, Títulos, Bordes, Acentos) --- */
+    --color-primary: #00A896;         /* Color base */
+    --color-primary-dark: #008f80;    /* Variante más oscura para degradados */
+    --color-primary-glow: rgba(0, 168, 150, 0.25); /* Sombra luminosa */
+    --color-primary-subtle: rgba(0, 168, 150, 0.12); /* Fondo suave */
 
-    /* Tonos Oscuros y Grises */
+    /* --- COLOR SECUNDARIO / DESTACADO (Peligro, Alertas, Salir) --- */
+    --color-accent: #E53955;          /* Color de contraste */
+    --color-accent-dark: #c82b45;     /* Variante oscura */
+    --color-accent-glow: rgba(229, 57, 85, 0.25);
+    --color-accent-subtle: rgba(229, 57, 85, 0.12);
+
+    /* --- TONOS DE FONDO Y ESTRUCTURA (Modo Oscuro) --- */
     --color-bg-main: #0B0E11;        /* Fondo general profundo */
     --color-card-bg: #151A21;        /* Fondo de tarjetas */
     --color-card-hover: #1C232C;     /* Hover de tarjetas */
     --color-input-bg: #0F1318;       /* Fondo de inputs */
     --color-card-border: #252D37;    /* Borde sutil */
 
-    /* Tipografía */
+    /* --- TIPOGRAFÍA Y TEXTOS --- */
     --color-text-heading: #E2E8F0;
     --color-text-body: #CBD5E1;
     --color-text-muted: #8292A6;
+    --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
 
-    /* Bordes Redondeados Moderados */
-    --radius-sm: 8px;   /* Esquinas suaves para inputs elegantes */
+    /* --- BORDES Y TRANSICIONES --- */
+    --radius-sm: 8px;   /* Esquinas suaves para inputs */
     --radius-md: 14px;  /* Para tarjetas y contenedores */
     --radius-lg: 20px;
     --radius-pill: 9999px;
 
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
-/* 2. BASE GENERAL (FIX DE DESPLAZAMIENTO MÓVIL) */
+/* ==========================================================================
+   2. BASE GENERAL
+   ========================================================================== */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -43,7 +49,7 @@ html, body {
     width: 100%;
     margin: 0;
     padding: 0;
-    overflow-x: clip; /* Corta el exceso sin congelar la vista inicial */
+    overflow-x: clip;
 }
 
 body {
@@ -56,21 +62,22 @@ body {
     flex-direction: column;
 }
 
-/* 3. NAVEGACIÓN PRINCIPAL (CENTRADA Y DESPEJADA DE BORDES) */
+/* ==========================================================================
+   3. NAVEGACIÓN PRINCIPAL Y MENÚ DESPLEGABLE
+   ========================================================================== */
 .top-nav {
     background-color: rgba(21, 26, 33, 0.95);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--color-card-border);
-    padding: 14px 28px;
+    padding: 12px 28px;
     position: sticky;
     top: 0;
     z-index: 100;
     width: 100%;
 }
 
-/* Contenedor interno para despejar los bordes laterales */
 .top-nav-container {
-    max-width: 1000px;
+    max-width: 1280px;
     width: 100%;
     margin: 0 auto;
     display: flex;
@@ -79,7 +86,7 @@ body {
 }
 
 .gym-logo {
-    height: 48px;
+    height: 44px;
     max-width: 100%;
     object-fit: contain;
     filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
@@ -90,62 +97,180 @@ body {
     transform: scale(1.05) rotate(-1deg);
 }
 
-.user-greeting {
-    font-size: 0.9rem;
-    color: var(--color-text-muted);
+/* Botón flotante de usuario (Cápsula) */
+.user-profile-menu {
+    position: relative;
 }
 
-.user-greeting strong {
-    color: var(--color-text-heading);
-}
-
-.btn-logout {
-    color: var(--color-coral);
-    border: 1px solid rgba(229, 57, 85, 0.4);
-    background: rgba(229, 57, 85, 0.05);
-    padding: 8px 18px;
+button.profile-trigger {
+    appearance: none;
+    -webkit-appearance: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: var(--color-input-bg);
+    border: 1px solid var(--color-card-border);
+    padding: 6px 14px 6px 6px;
     border-radius: var(--radius-pill);
-    font-size: 0.85rem;
+    cursor: pointer;
+    color: var(--color-text-heading);
+    transition: var(--transition);
+    font-family: inherit;
+    outline: none;
+}
+
+button.profile-trigger:hover {
+    background-color: var(--color-card-hover);
+    border-color: var(--color-primary-glow);
+}
+
+.avatar-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.user-name-display {
+    font-size: 0.88rem;
     font-weight: 600;
+    color: var(--color-text-body);
+}
+
+.chevron-icon {
+    color: var(--color-text-muted);
+    transition: transform 0.2s ease;
+}
+
+button.profile-trigger.active .chevron-icon {
+    transform: rotate(180deg);
+}
+
+/* Menú Desplegable */
+.profile-dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    width: 220px;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: var(--transition);
+    z-index: 200;
+}
+
+.profile-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-header {
+    padding: 4px 8px 8px 8px;
+    text-align: left;
+}
+
+.dropdown-user-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--color-text-heading);
+    margin: 0;
+}
+
+.dropdown-user-role {
+    font-size: 0.75rem;
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: var(--color-card-border);
+    margin: 8px 0;
+}
+
+ul.dropdown-menu-list {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+ul.dropdown-menu-list li {
+    list-style: none !important;
+    margin: 0 !important;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    color: var(--color-text-body);
+    text-decoration: none !important;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm);
     transition: var(--transition);
 }
 
-.btn-logout:hover {
-    background-color: var(--color-coral);
+.dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
     color: var(--color-text-heading);
-    box-shadow: 0 0 15px var(--color-coral-glow);
 }
 
-/* 4. CONTENEDORES Y BANNERS */
+.dropdown-logout {
+    color: var(--color-accent);
+}
+
+.dropdown-logout:hover {
+    background-color: var(--color-accent-subtle);
+    color: var(--color-accent);
+}
+
+/* ==========================================================================
+   4. CONTENEDORES Y BANNERS
+   ========================================================================== */
 .dashboard-main {
     flex: 1;
-    max-width: 1000px;
-    width: 90%;
+    max-width: 1280px;
+    width: 95%;
     margin: 30px auto;
-    padding: 0 20px;
+    padding: 0 10px;
 }
 
 .welcome-banner {
-    background: linear-gradient(135deg, rgba(0, 168, 150, 0.12) 0%, rgba(229, 57, 85, 0.08) 100%);
+    background: linear-gradient(135deg, var(--color-primary-subtle) 0%, var(--color-accent-subtle) 100%);
     border: 1px solid var(--color-card-border);
-    border-left: 4px solid var(--color-teal);
+    border-left: 4px solid var(--color-primary);
     border-radius: var(--radius-md);
-    padding: 28px 32px;
-    margin-bottom: 32px;
+    padding: 24px 28px;
+    margin-bottom: 28px;
 }
 
 .welcome-banner h2 {
-    font-size: 1.75rem;
+    font-size: 1.6rem;
     color: var(--color-text-heading);
     font-weight: 700;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .welcome-banner p {
     color: var(--color-text-muted);
+    font-size: 0.95rem;
 }
 
-/* 5. TARJETAS Y GRID RESPONSIVO */
+/* ==========================================================================
+   5. TARJETAS Y GRID RESPONSIVO
+   ========================================================================== */
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
@@ -157,16 +282,16 @@ body {
     background-color: var(--color-card-bg);
     border: 1px solid var(--color-card-border);
     border-radius: var(--radius-md);
-    padding: 28px;
+    padding: 24px;
     box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
     transition: var(--transition);
 }
 
 .dashboard-card:hover {
     background-color: var(--color-card-hover);
-    border-color: rgba(0, 168, 150, 0.4);
+    border-color: var(--color-primary-glow);
     transform: translateY(-4px);
-    box-shadow: 0 15px 35px -10px rgba(0, 168, 150, 0.15);
+    box-shadow: 0 15px 35px -10px var(--color-primary-glow);
 }
 
 .card-icon {
@@ -187,66 +312,104 @@ body {
     margin-bottom: 24px;
 }
 
-/* 6. BOTONES */
+/* ==========================================================================
+   6. BÚSQUEDA Y FILTROS
+   ========================================================================== */
+.search-card {
+    margin-bottom: 24px;
+    padding: 18px 24px;
+}
+
+.search-input-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-input-group .form-control {
+    max-width: 360px;
+    flex: 1;
+}
+
+.btn-link {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: var(--transition);
+}
+
+.btn-link:hover {
+    color: var(--color-accent);
+}
+
+/* ==========================================================================
+   7. BOTONES GENÉRICOS
+   ========================================================================== */
 .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 12px 24px;
+    padding: 8px 18px;
     border-radius: var(--radius-pill);
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     cursor: pointer;
     border: none;
+    text-decoration: none;
     transition: var(--transition);
-    gap: 8px;
+    gap: 6px;
+    white-space: nowrap;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #00A896, #008f80);
-    color: #E2E8F0;
-    box-shadow: 0 4px 15px var(--color-teal-glow);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    color: #FFFFFF;
+    box-shadow: 0 4px 15px var(--color-primary-glow);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 168, 150, 0.4);
+    box-shadow: 0 6px 20px var(--color-primary-glow);
 }
 
 .btn-secondary {
     background-color: transparent;
-    border: 1px solid var(--color-teal);
-    color: var(--color-teal);
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
 }
 
 .btn-secondary:hover {
-    background-color: var(--color-teal);
-    color: var(--color-text-heading);
+    background-color: var(--color-primary);
+    color: #FFFFFF;
 }
 
 .btn-danger {
-    background: linear-gradient(135deg, #E53955, #c82b45);
-    color: #E2E8F0;
-    box-shadow: 0 4px 15px var(--color-coral-glow);
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+    color: #FFFFFF;
+    box-shadow: 0 4px 15px var(--color-accent-glow);
 }
 
 .btn-danger:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(229, 57, 85, 0.4);
+    box-shadow: 0 6px 20px var(--color-accent-glow);
 }
 
 .btn-sm {
-    padding: 8px 16px;
-    font-size: 0.8rem;
+    padding: 6px 12px;
+    font-size: 0.78rem;
 }
 
 .btn-block {
     width: 100%;
 }
 
-/* 7. FORMULARIOS E INPUTS Generales */
+/* ==========================================================================
+   8. FORMULARIOS E INPUTS
+   ========================================================================== */
 .form-group {
     margin-bottom: 20px;
+    text-align: left;
 }
 
 .form-group label {
@@ -255,64 +418,97 @@ body {
     font-weight: 600;
     color: var(--color-text-muted);
     margin-bottom: 8px;
+    text-align: left;
 }
 
 input[type="text"],
 input[type="email"],
 input[type="password"],
+input[type="number"],
 input[type="date"],
 select,
 .form-control {
     width: 100%;
-    padding: 12px 16px;
+    box-sizing: border-box;
+    padding: 10px 14px;
     background-color: var(--color-input-bg);
     border: 1px solid var(--color-card-border);
-    border-radius: var(--radius-sm); /* Recuadros con borde suave de 8px */
+    border-radius: var(--radius-sm);
     color: var(--color-text-heading);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     transition: var(--transition);
 }
 
 input:focus, select:focus {
     outline: none;
-    border-color: var(--color-teal);
-    box-shadow: 0 0 0 3px var(--color-teal-glow);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-glow);
 }
 
-/* 8. TABLAS REDONDEADAS Y LIMPIAS */
+.input-date {
+    width: 125px;
+    background-color: var(--color-input-bg);
+    border: 1px solid var(--color-card-border);
+    color: var(--color-text-heading);
+    padding: 5px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    outline: none;
+    color-scheme: dark;
+    transition: var(--transition);
+}
+
+.input-date:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-glow);
+}
+
+/* ==========================================================================
+   9. TABLAS GENERALES Y COMPACTAS
+   ========================================================================== */
+.table-card {
+    padding: 0;
+    overflow: hidden;
+}
+
 .table-responsive {
     width: 100%;
     overflow-x: auto;
-    border-radius: var(--radius-sm);
-    padding-bottom: 6px;
-    margin-bottom: 12px;
 }
 
 .data-table, .routine-table {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
+    border-collapse: collapse !important;
     text-align: left;
 }
 
 .data-table th, .routine-table th {
     background-color: rgba(0, 168, 150, 0.08);
-    color: var(--color-teal);
-    padding: 16px 20px;
-    font-size: 0.8rem;
+    color: var(--color-primary);
+    padding: 12px 14px;
+    font-size: 0.78rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.8px;
     font-weight: 700;
-    border-bottom: 1px solid var(--color-card-border);
-    white-space: nowrap;
+    border-bottom: 1px solid var(--color-card-border) !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
 }
 
 .data-table td, .routine-table td {
-    padding: 12px 10px;
-    border-bottom: 1px solid var(--color-card-border);
-    font-size: 0.9rem;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--color-card-border) !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    font-size: 0.88rem;
     color: var(--color-text-body);
     vertical-align: middle;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none !important;
 }
 
 .data-table tbody tr {
@@ -323,59 +519,74 @@ input:focus, select:focus {
     background-color: rgba(255, 255, 255, 0.02);
 }
 
-/* 9. BADGES REDONDEADAS */
-.status-badge {
+.font-bold {
+    font-weight: 600;
+    color: var(--color-text-heading);
+}
+
+.text-nowrap {
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   10. BADGES Y ESTADOS SUTILES
+   ========================================================================== */
+.status-pill {
     display: inline-flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 8px 16px;
-    border-radius: var(--radius-pill);
+    align-items: center;
+    gap: 6px;
     font-size: 0.8rem;
-    font-weight: 700;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
 }
 
-.badge-success {
-    background-color: rgba(0, 168, 150, 0.12);
-    color: var(--color-teal);
-    border: 1px solid rgba(0, 168, 150, 0.3);
+.status-ok {
+    color: var(--color-primary);
+    background-color: var(--color-primary-subtle);
+    border: 1px solid var(--color-primary-glow);
 }
 
-.badge-danger {
-    background-color: rgba(229, 57, 85, 0.12);
-    color: var(--color-coral);
-    border: 1px solid rgba(229, 57, 85, 0.3);
+.status-alert {
+    color: var(--color-accent);
+    background-color: var(--color-accent-subtle);
+    border: 1px solid var(--color-accent-glow);
 }
 
-.status-detail {
-    font-weight: 400;
-    font-size: 0.72rem;
-    opacity: 0.85;
+.status-dot {
+    font-size: 0.55rem;
+    line-height: 1;
 }
 
-/* 10. ALERTAS CURVAS */
+/* ==========================================================================
+   11. ALERTAS
+   ========================================================================== */
 .alert {
-    padding: 16px 20px;
+    padding: 14px 18px;
     border-radius: var(--radius-sm);
-    margin-bottom: 24px;
-    font-size: 0.9rem;
+    margin-bottom: 20px;
+    font-size: 0.88rem;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .alert-success {
-    background-color: rgba(0, 168, 150, 0.15);
-    border: 1px solid var(--color-teal);
+    background-color: var(--color-primary-subtle);
+    border: 1px solid var(--color-primary);
     color: var(--color-text-heading);
 }
 
 .alert-danger {
-    background-color: rgba(229, 57, 85, 0.15);
-    border: 1px solid var(--color-coral);
+    background-color: var(--color-accent-subtle);
+    border: 1px solid var(--color-accent);
     color: var(--color-text-heading);
 }
 
-/* 11. AUTENTICACIÓN (LOGIN Y REGISTRO) */
+/* ==========================================================================
+   12. AUTENTICACIÓN Y FOOTER
+   ========================================================================== */
 body.auth-page {
     display: flex;
     justify-content: center;
@@ -388,7 +599,7 @@ body.auth-page {
     align-items: center;
     width: 100%;
     max-width: 100%;
-    padding: 16px;
+    padding: 20px;
 }
 
 .auth-card {
@@ -396,9 +607,13 @@ body.auth-page {
     max-width: 420px;
     box-sizing: border-box;
     margin: 0 auto;
+    text-align: center;
 }
 
-/* 12. FOOTER */
+.auth-card .alert {
+    text-align: left;
+}
+
 .main-footer {
     text-align: center;
     padding: 24px;
@@ -409,111 +624,300 @@ body.auth-page {
 }
 
 /* ==========================================================================
-   13. CREADOR DE RUTINAS (Diseño Estilizado & Espacioso)
+   13. ESTILOS CONSTRUCTOR DE RUTINAS (PROFESOR)
    ========================================================================== */
-
-/* Contenedor principal centrado que evita tocar los bordes */
 .routine-builder-main {
-    flex: 1;
-    max-width: 1000px;
-    width: 90%;
-    margin: 30px auto;
-    padding: 0 20px;
+    max-width: 92% !important;
+    width: 92% !important;
+    margin: 30px auto !important;
 }
 
-/* Tarjeta del Día */
 .routine-day-card {
-    background-color: var(--color-card-bg);
-    border: 1px solid var(--color-card-border);
-    border-radius: var(--radius-md);
-    padding: 32px;
-    margin-bottom: 28px;
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 25px !important;
+    margin-bottom: 35px !important;
 }
 
 .routine-day-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 16px;
-    margin-bottom: 24px;
+    margin-bottom: 15px;
 }
 
-.routine-day-header label {
-    font-weight: 700;
-    color: var(--color-teal);
-    font-size: 1.05rem;
-    white-space: nowrap;
+.routine-day-header input {
+    max-width: 320px;
+    display: inline-block;
+    margin-left: 10px;
 }
 
-/* Inputs de la tabla con esquinas rectangulares suaves (8px) */
 .table-input {
-    width: 100%;
-    min-width: 120px;
-    padding: 10px 14px;
-    background-color: var(--color-input-bg);
-    border: 1px solid var(--color-card-border);
-    border-radius: 8px; /* Aspecto rectangular elegante, no abultado */
-    color: var(--color-text-heading);
-    font-size: 0.9rem;
-    transition: var(--transition);
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 8px !important;
+    font-size: 0.95em !important;
+    text-align: center;
 }
 
-.table-input::placeholder {
-    color: var(--color-text-muted);
-    opacity: 0.5;
+.col-accion {
+    text-align: center;
 }
 
-.table-input:focus {
-    outline: none;
-    border-color: var(--color-teal);
-    box-shadow: 0 0 0 3px var(--color-teal-glow);
-    background-color: #12171E;
-}
-
-.routine-actions {
-    display: flex;
-    gap: 16px;
-    margin-top: 32px;
-    flex-wrap: wrap;
+.section-spacing {
+    margin-top: 10px;
+    margin-bottom: 25px;
 }
 
 /* ==========================================================================
-   14. RESPONSIVO PARA MÓVILES (CONSOLIDADO)
+   14. ESTILOS PÁGINA DE ALUMNO (RUTINA COMPLETA, ACORDEÓN Y TABLAS)
+   ========================================================================== */
+.routine-container {
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    margin-top: 20px;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.routine-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-card-border);
+}
+
+.routine-title-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.routine-title-info h3 {
+    margin: 0;
+    color: var(--color-text-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.badge-status {
+    background-color: var(--color-primary-subtle);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary-glow);
+    padding: 3px 12px;
+    border-radius: var(--radius-pill);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Botones Acción (PDF y Compartir) */
+.routine-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+}
+
+.btn-pdf {
+    background-color: var(--color-card-border);
+    color: var(--color-text-heading);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn-pdf:hover {
+    background-color: var(--color-card-hover);
+    color: #FFFFFF;
+}
+
+.btn-share {
+    background-color: var(--color-primary);
+    color: #FFFFFF;
+}
+
+.btn-share:hover {
+    background-color: var(--color-primary-dark);
+    box-shadow: 0 4px 15px var(--color-primary-glow);
+}
+
+/* Acordeón para los días */
+.routine-days-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.accordion-item {
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background-color: var(--color-input-bg);
+}
+
+button.accordion-header {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background-color: var(--color-input-bg);
+    border: none;
+    color: var(--color-text-heading);
+    cursor: pointer;
+    text-align: left;
+    transition: var(--transition);
+    font-family: inherit;
+    outline: none;
+}
+
+button.accordion-header:hover {
+    background-color: var(--color-card-hover);
+}
+
+.day-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1rem;
+}
+
+.day-badge {
+    background-color: var(--color-card-border);
+    color: var(--color-primary);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.accordion-arrow {
+    color: var(--color-text-muted);
+    transition: transform 0.3s ease;
+}
+
+button.accordion-header.active .accordion-arrow {
+    transform: rotate(180deg);
+    color: var(--color-primary);
+}
+
+.accordion-content {
+    padding: 20px;
+    border-top: 1px solid var(--color-card-border);
+    background-color: var(--color-card-bg);
+}
+
+.day-tables-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.table-section-title {
+    margin: 0 0 12px 0;
+    font-size: 0.95rem;
+    color: var(--color-text-heading);
+    font-weight: 600;
+}
+
+/* Formato de Celdas Específicas de Rutina */
+.col-exercise {
+    font-weight: 600;
+    color: var(--color-text-heading) !important;
+}
+
+.col-progression {
+    text-align: center;
+    color: var(--color-primary) !important;
+    font-weight: 600;
+}
+
+/* Estado Sin Rutina Asignada */
+.empty-state-card {
+    background-color: var(--color-card-bg);
+    border: 1px dashed var(--color-card-border);
+    border-radius: var(--radius-md);
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--color-text-muted);
+    margin-top: 20px;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+}
+
+.empty-state-card h3 {
+    color: var(--color-text-heading);
+    margin: 0 0 8px 0;
+}
+
+/* ==========================================================================
+   15. RESPONSIVO PARA MÓVILES
    ========================================================================== */
 @media (max-width: 768px) {
     .top-nav {
-        padding: 12px 20px;
+        padding: 12px 16px;
     }
 
     .gym-logo {
         height: 38px;
     }
 
-    .user-greeting {
-        display: none;
-    }
-
     .dashboard-main,
     .routine-builder-main {
         width: 100%;
-        padding: 0 16px; /* Despeje de 16px de los bordes físicos del celular */
+        padding: 0 12px;
         margin: 16px auto;
     }
 
     .welcome-banner, 
     .dashboard-card, 
     .search-card, 
-    .table-card, 
-    .routine-card {
-        padding: 20px 18px;
+    .routine-card,
+    .routine-container {
+        padding: 20px 16px;
     }
 
     .welcome-banner h2 {
-        font-size: 1.4rem;
+        font-size: 1.35rem;
     }
 
-    .routine-day-card {
-        padding: 20px 16px;
+    .routine-header-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .routine-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .btn-action {
+        width: 100%;
+        justify-content: center;
+    }
+
+    button.accordion-header {
+        padding: 14px 16px;
     }
 
     .routine-day-header {
@@ -525,13 +929,5 @@ body.auth-page {
     .routine-day-header .table-input {
         width: 100%;
         max-width: 100% !important;
-    }
-
-    .routine-actions {
-        flex-direction: column;
-    }
-
-    .routine-actions .btn {
-        width: 100%;
     }
 }

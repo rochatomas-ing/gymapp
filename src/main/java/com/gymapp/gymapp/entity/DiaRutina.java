@@ -2,6 +2,7 @@ package com.gymapp.gymapp.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -54,5 +55,18 @@ public class DiaRutina {
     public void agregarItem(ItemRutina item) {
         this.items.add(item);
         item.setDiaRutina(this);
+    }
+
+    // Filtros útiles para Thymeleaf al momento de ver la rutina
+    public List<ItemRutina> getCalentamientos() {
+        return items.stream()
+                    .filter(ItemRutina::getEsCalentamiento)
+                    .collect(Collectors.toList());
+    }
+
+    public List<ItemRutina> getEjerciciosPrincipales() {
+        return items.stream()
+                    .filter(item -> !item.getEsCalentamiento())
+                    .collect(Collectors.toList());
     }
 }
